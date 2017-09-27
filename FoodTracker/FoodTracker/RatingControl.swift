@@ -55,6 +55,11 @@ import UIKit
         }
     }
     
+    private func updateButtonSelectionStates() {
+        for (index, button) in ratingButtons.enumerated() {
+            
+        }
+    }
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
