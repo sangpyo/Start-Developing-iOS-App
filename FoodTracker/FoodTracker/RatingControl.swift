@@ -2,16 +2,18 @@
 //  RatingControl.swift
 //  FoodTracker
 //
-//  Created by sangpyo on 2017. 9. 27..
-//  Copyright © 2017년 박상표. All rights reserved.
+//  Created by Jane Appleseed on 11/2/16.
+//  Copyright © 2016 Apple Inc. All rights reserved.
 //
 
 import UIKit
 
 @IBDesignable class RatingControl: UIStackView {
     
-    // MARK: Properties
+    //MARK: Properties
+    
     private var ratingButtons = [UIButton]()
+    
     var rating = 0 {
         didSet {
             updateButtonSelectionStates()
@@ -23,26 +25,28 @@ import UIKit
             setupButtons()
         }
     }
+
     @IBInspectable var starCount: Int = 5 {
         didSet {
             setupButtons()
         }
     }
-
-    // MARK: Initialization
+    
+    //MARK: Initialization
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupButtons()
     }
-    
+
     required init(coder: NSCoder) {
         super.init(coder: coder)
         setupButtons()
     }
     
-    // MARK: Button Action
-    @objc func ratingButtonTapped(button: UIButton) {
-        print("Button pressed 👍")
+    //MARK: Button Action
+    
+    func ratingButtonTapped(button: UIButton) {
         guard let index = ratingButtons.index(of: button) else {
             fatalError("The button, \(button), is not in the ratingButtons array: \(ratingButtons)")
         }
@@ -59,46 +63,12 @@ import UIKit
         }
     }
     
-    private func updateButtonSelectionStates() {
-        for (index, button) in ratingButtons.enumerated() {
-            // If the index of a button is less than the rating, that button should be selected.
-            button.isSelected = index < rating
-            
-            // Set the hint string for the currently selected star
-            let hintString: String?
-            if rating == index + 1 {
-                hintString = "Tab to reset the rating to zero"
-            } else {
-                hintString = nil
-            }
-            
-            // Calculate the value string
-            let valueString: String
-            switch(rating) {
-            case 0:
-                valueString = "No rating set."
-            case 1:
-                valueString = "1 star set."
-            default:
-                valueString = "\(rating) starts set."
-            }
-            
-            button.accessibilityHint = hintString
-            button.accessibilityValue = valueString
-        }
-    }
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
-
-    // MARK: Private Methods
+    
+    //MARK: Private Methods
+    
     private func setupButtons() {
         
-        // clear any existing buttons
+        // Clear any existing buttons
         for button in ratingButtons {
             removeArrangedSubview(button)
             button.removeFromSuperview()
@@ -108,16 +78,12 @@ import UIKit
         // Load Button Images
         let bundle = Bundle(for: type(of: self))
         let filledStar = UIImage(named: "filledStar", in: bundle, compatibleWith: self.traitCollection)
-        let emptyStar = UIImage(named: "emptyStar", in: bundle, compatibleWith: self.traitCollection)
-        let highlightedStar = UIImage(named: "highlighedStar", in: bundle, compatibleWith: self.traitCollection)
+        let emptyStar = UIImage(named:"emptyStar", in: bundle, compatibleWith: self.traitCollection)
+        let highlightedStar = UIImage(named:"highlightedStar", in: bundle, compatibleWith: self.traitCollection)
         
         for index in 0..<starCount {
             // Create the button
             let button = UIButton()
-            //button.backgroundColor = UIColor.red
-            
-            // Set the accessibility label
-            button.accessibilityLabel = "Set \(index + 1) star rating"
             
             // Set the button images
             button.setImage(emptyStar, for: .normal)
@@ -126,10 +92,12 @@ import UIKit
             button.setImage(highlightedStar, for: [.highlighted, .selected])
             
             // Add constraints
-            button.translatesAutoresizingMaskIntoConstraints = false // Disables the button's automatically generated constraints.
-            // 44 point x 44 point fixed-size button
+            button.translatesAutoresizingMaskIntoConstraints = false
             button.heightAnchor.constraint(equalToConstant: starSize.height).isActive = true
             button.widthAnchor.constraint(equalToConstant: starSize.width).isActive = true
+            
+            // Set the accessibility label
+            button.accessibilityLabel = "Set \(index + 1) star rating"
             
             // Setup the button action
             button.addTarget(self, action: #selector(RatingControl.ratingButtonTapped(button:)), for: .touchUpInside)
@@ -144,5 +112,31 @@ import UIKit
         updateButtonSelectionStates()
     }
     
-    // MARK: I
+    private func updateButtonSelectionStates() {
+        for (index, button) in ratingButtons.enumerated() {
+            // If the index of a button is less than the rating, that button should be selected.
+            button.isSelected = index < rating
+            
+            // Set accessibility hint and value
+            let hintString: String?
+            if rating == index + 1 {
+                hintString = "Tap to reset the rating to zero."
+            } else {
+                hintString = nil
+            }
+
+            let valueString: String
+            switch (rating) {
+            case 0:
+                valueString = "No rating set."
+            case 1:
+                valueString = "1 star set."
+            default:
+                valueString = "\(rating) stars set."
+            }
+            
+            button.accessibilityHint = hintString
+            button.accessibilityValue = valueString
+        }
+    }
 }
