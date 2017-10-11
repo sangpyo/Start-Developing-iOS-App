@@ -115,6 +115,10 @@ class MealTableViewController: UITableViewController {
         }
     }
     
+    @IBAction func unwindToMealListCancel(sender: UIStoryboardSegue) {
+        //
+    }
+    
     //MARK: Private Methods
     
     private func loadSampleMeals() {
